@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Goal Kicking Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #d3f4ff;
+        }
+
+        .game-container {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #00509e;
+        }
+
+        /* Links in top-right corner */
+        .links {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .links a {
+            color: #00509e;
+            font-size: 16px;
+            margin-left: 10px;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .field {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 20px auto;
+            background: #4caf50;
+            border: 2px solid #000;
+            border-radius: 10px;
+        }
+
+        /* Endzone (Dark Blue) */
+        .endzone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: #003366;
+        }
+
+        /* Yard Lines */
+        .yard-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: white;
+            z-index: 1;
+        }
+
+        .yard-line:nth-child(odd) {
+            top: 40px;
+        }
+
+        .yard-line:nth-child(even) {
+            top: 90px;
+        }
+
+        .goalposts {
+            position: absolute;
+            top: 10px; /* Start the goalposts at the beginning of the endzone */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 200px;
+            z-index: 2;
+        }
+
+        .post {
+            position: absolute;
+            background: yellow;
+        }
+
+        .left-post, .right-post {
+            width: 5px;
+            height: 100px;
+        }
+
+        .left-post {
+            left: 0;
+            bottom: 100px;
+        }
+
+        .right-post {
+            right: 0;
+            bottom: 100px;
+        }
+
+        .crossbar {
+            position: absolute;
+            bottom: 100px;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: yellow;
+        }
+
+        .ball {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px; /* Corrected width for American football */
+            height: 35px; /* Corrected height for American football */
+            background: brown;
+            border-radius: 20px; /* Adjusted to make the ball oval */
+            border: 3px solid black; /* Changed border to black */
+            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.5);
+            z-index: 3; /* Ensure ball is on top of everything else */
+        }
+
+        /* Inside stitching of the ball (single vertical line) */
+        .ball::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 9px;
+            width: 2px;
+            height: 20px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        /* University of Utah logo at the center of the field */
+        .utah-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px; /* Adjust the size of the logo */
+            height: auto;
+            z-index: 2; /* Make sure the logo is above the yard lines, but below the ball */
+        }
+
+        .accuracy-meter {
+            position: relative;
+            width: 40px;
+            height: 200px;
+            margin: 20px auto;
+            border: 3px solid #000;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .meter-bar {
+            position: absolute;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(180deg, red, yellow, green, yellow, red);
+            bottom: 0;
+            border-radius: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #00509e;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #003f73;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="links">
+        <a href="fromscratch.html">Back to scratch page</a>
+        <a href="index.html">Back to professional page</a>
+    </div>
+
+    <div class="game-container">
+        <h1>Evans and Company Field Goal Frenzy</h1>
+        <div class="field">
+            <!-- Endzone -->
+            <div class="endzone"></div>
+            <!-- Yard Lines -->
+            <div class="yard-line" style="top: 40px;"></div>
+            <div class="yard-line" style="top: 90px;"></div>
+            <div class="yard-line" style="top: 140px;"></div>
+            <div class="yard-line" style="top: 190px;"></div>
+            <div class="yard-line" style="top: 240px;"></div>
+            <div class="yard-line" style="top: 290px;"></div>
+            <div class="yard-line" style="top: 340px;"></div>
+            <!-- University of Utah logo -->
+            <img src="f59mntuxy6z31v0gapgueoyg2.png" alt="University of Utah Logo" class="utah-logo">
+            <!-- Goalposts -->
+            <div class="goalposts">
+                <div class="post left-post"></div>
+                <div class="post right-post"></div>
+                <div class="crossbar"></div>
+            </div>
+            <div class="ball" id="football"></div>
+        </div>
+        <div class="accuracy-meter">
+            <div class="meter-bar" id="meter-bar"></div>
+        </div>
+        <button id="kick-button">Kick!</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const ball = document.getElementById("football");
+        const button = document.getElementById("kick-button");
+        const result = document.getElementById("result");
+        const meterBar = document.getElementById("meter-bar");
+
+        let meterDirection = 1; // 1 for up, -1 for down
+        let meterValue = 0; // Represents accuracy percentage (0-100)
+
+        // Start the accuracy meter animation
+        function startMeter() {
+            setInterval(() => {
+                meterValue += meterDirection * 2;
+                if (meterValue >= 100 || meterValue <= 0) {
+                    meterDirection *= -1; // Reverse direction at edges
+                }
+                meterBar.style.height = `${meterValue}%`;
+            }, 20);
+        }
+
+        // Kick the ball
+        button.addEventListener("click", () => {
+            const accuracy = meterValue; // Use current meter value as accuracy
+            let isGoal = false;
+
+            // Animate the ball
+            ball.style.transition = "all 1s ease";
+            ball.style.bottom = "300px";
+
+            // Allow the ball to move left or right, depending on accuracy
+            const ballPositionX = accuracy > 40 && accuracy < 60 ? "50%" : accuracy < 40 ? "35%" : "65%";
+            ball.style.left = ballPositionX;
+
+            // Check if it's a goal (allowing a little buffer beyond the goalposts)
+            setTimeout(() => {
+                if (accuracy > 35 && accuracy < 65) {
+                    isGoal = true;
+                    result.textContent = "The kick is good! 🎉";
+                    result.style.color = "green";
+                } else {
+                    result.textContent = "No good! 😢";
+                    result.style.color = "red";
+                }
+
+                // Reset ball position
+                setTimeout(() => {
+                    ball.style.transition = "none";
+                    ball.style.bottom = "20px";
+                    ball.style.left = "50%";
+                }, 1000);
+            }, 1000);
+        });
+
+        startMeter(); // Start the meter animation
+    </script>
+</body>
+</html>
